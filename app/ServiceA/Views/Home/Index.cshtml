@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div>
+    <h1>AWS ECS Service Connect Demo</h1>
+    <button id="getCountryBtn">Get country</button>
+    <p>Country: <span id="countryLabel">No country fetched yet</span></p>
+</div>
+
+<script>
+    console.log("@Url.Action("GetCountry", "Home")");
+</script>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">        
+        $(document).ready(function (){
+            $('#getCountryBtn').click(function () {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetCountry", "Home")",
+                    success: function (data) {
+                        $('#countryLabel').text(data.country);
+                    },
+                    error: function () {
+                        $('#countryLabel').text("Error fetching country.");
+                    }
+                });
+            });           
+        });
+    </script>
+}
