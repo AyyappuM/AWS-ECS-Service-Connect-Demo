@@ -133,6 +133,7 @@ resource "aws_ecs_cluster" "example" {
 
 resource "aws_ecr_repository" "service_a_ecr_repository" {
   name = "service_a_ecr_repository"
+  force_delete = true
 }
 
 output "service_a_ecr_repository_url" {
@@ -141,6 +142,7 @@ output "service_a_ecr_repository_url" {
 
 resource "aws_ecr_repository" "service_b_ecr_repository" {
   name = "service_b_ecr_repository"
+  force_delete = true
 }
 
 output "sservice_b_ecr_repository_url" {

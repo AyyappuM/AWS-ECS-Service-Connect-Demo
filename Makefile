@@ -74,5 +74,7 @@ deploy-private-links:
 	--auto-approve
 
 destroy:
-	terraform destory -var="region=${AWS_REGION}" --auto-approve
+	aws ecr delete-repository --repository-name service_a_ecr_repository --force --profile ${AWS_PROFILE}
+	aws ecr delete-repository --repository-name service_b_ecr_repository --force --profile ${AWS_PROFILE}
+	terraform destroy -var="region=${AWS_REGION}" --auto-approve
 
