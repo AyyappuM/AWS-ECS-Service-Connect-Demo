@@ -2,6 +2,15 @@ AWS_REGION=ap-south-1
 AWS_PROFILE=a2
 AWS_ACCOUNT_NUMBER=$(shell aws sts get-caller-identity --query "Account" --output text --profile ${AWS_PROFILE})
 
+apply:
+	make deploy-vpc
+	make deploy-ecs-cluster
+	make deploy-ecr-images
+	make deploy-iam-roles
+	make deploy-task-definitions
+	make deploy-ecs-services
+	make deploy-private-links
+
 deploy-vpc:
 	terraform apply \
 	-target="aws_vpc.my_vpc" \
@@ -12,11 +21,9 @@ deploy-vpc:
 	-target="aws_route_table_association.public_subnet_association" \
 	-target="aws_route_table.private_route_table" \
 	-target="aws_route_table_association.private_subnet_association" \
+	-target="aws_security_group.allow_all_traffic" \
 	-var="region=${AWS_REGION}" \
 	--auto-approve
-
-deploy-security-group:
-	terraform apply -target="aws_security_group.allow_all_traffic" -var="region=${AWS_REGION}" --auto-approve
 
 deploy-ecs-cluster:
 	terraform apply \
@@ -74,7 +81,7 @@ deploy-private-links:
 	--auto-approve
 
 destroy:
-	aws ecr delete-repository --repository-name service_a_ecr_repository --force --profile ${AWS_PROFILE}
-	aws ecr delete-repository --repository-name service_b_ecr_repository --force --profile ${AWS_PROFILE}
+	aws ecr batch-delete-image --repository-name service_a_ecr_repository --image-ids imageTag=latest --profile ${AWS_PROFILE}
+	aws ecr batch-delete-image --repository-name service_b_ecr_repository --image-ids imageTag=latest --profile ${AWS_PROFILE}
 	terraform destroy -var="region=${AWS_REGION}" --auto-approve
 

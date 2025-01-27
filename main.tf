@@ -360,7 +360,7 @@ resource "aws_ecs_service" "servicea" {
   cluster                            = aws_ecs_cluster.example.id
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
-  desired_count                      = 0
+  desired_count                      = 1
   enable_ecs_managed_tags            = true
   enable_execute_command             = false
   force_delete                       = null
@@ -393,6 +393,8 @@ resource "aws_ecs_service" "servicea" {
     enabled = true
     namespace = aws_service_discovery_http_namespace.example.arn
   }
+
+  depends_on = [ aws_ecs_service.serviceb ]
 }
 
 resource "aws_ecs_service" "serviceb" {
@@ -400,7 +402,7 @@ resource "aws_ecs_service" "serviceb" {
   cluster                            = aws_ecs_cluster.example.id
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
-  desired_count                      = 0
+  desired_count                      = 1
   enable_ecs_managed_tags            = true
   enable_execute_command             = false
   force_delete                       = null
