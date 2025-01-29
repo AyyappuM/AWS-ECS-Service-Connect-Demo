@@ -9,7 +9,9 @@ apply:
 	make deploy-iam-roles
 	make deploy-task-definitions
 	make deploy-ecs-services
-	make deploy-private-links
+	make deploy-ecr-private-links
+	make deploy-s3-private-links
+	make deploy-cw-logs-private-links
 
 deploy-vpc:
 	terraform apply \
@@ -71,11 +73,21 @@ deploy-ecs-services:
 	-var="region=${AWS_REGION}" \
 	--auto-approve
 
-deploy-private-links:
+deploy-ecr-private-links:
 	terraform apply \
 	-target="aws_vpc_endpoint.ecr_api" \
 	-target="aws_vpc_endpoint.ecr_docker" \
+	-var="region=${AWS_REGION}" \
+	--auto-approve
+
+deploy-s3-private-links:
+	terraform apply \
 	-target="aws_vpc_endpoint.s3" \
+	-var="region=${AWS_REGION}" \
+	--auto-approve
+
+deploy-cw-logs-private-links:
+	terraform apply \
 	-target="aws_vpc_endpoint.cloudwatch_logs" \
 	-var="region=${AWS_REGION}" \
 	--auto-approve
